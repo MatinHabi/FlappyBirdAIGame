@@ -1,0 +1,133 @@
+# Flappy Bird DQN — game configuration
+# Six difficulty levels.  Difficulty progresses along ONE axis (how
+# small + how mobile the gap is) so a single policy can in principle
+# be optimal on all of them.  Everything else — pipe width, spawn
+# cadence, action rate, formation — is held constant.
+
+# ----- screen / global -----
+screen_width: 400
+screen_height: 600
+frame_rate: 30
+random_seed: 0
+
+# ----- physics -----
+gravity: 0.5          # added to bird_velocity each step
+jump_strength: -8     # bird_velocity is set to this when the agent jumps
+pipe_speed: 3         # pixels per frame the pipes scroll left
+
+# ----- rendering -----
+show_screen: false
+bird_img_path: bird.png
+verbose: false
+
+colors:
+  background: [255, 255, 255]
+  pipe:       [0,   128, 0]
+  score:      [0,   0,   255]
+
+# ----- bird -----
+bird_attributes:
+  width:  40
+  height: 30
+  x:      50          # bird's x is constant; only y moves
+  y:      300
+
+# ----- action codes -----
+action_table:
+  jump:        0
+  do_nothing:  1
+  quit_game:   2
+
+# ----- which level the default `level=` argument picks -----
+level: 1
+
+# ----- per-level overrides ---------------------------------------------------
+# To keep things learnable by a single policy, we hold these constants
+# across ALL levels:
+#     pipe_attributes.pipe_frequency   = 1800   (pipes spawn every 1.8s)
+#     pipe_attributes.width            = 60     (pipe width)
+#     pipe_attributes.formation        = random (gap centre is uniform-random)
+#     pipe_attributes.window_y_mean    = 250    (gap centre orbits y=250)
+#     minimum_action_gap               = 2      (agent acts every 2 frames)
+#     game_length                      = 10     (10 pipes per episode)
+#
+# The two knobs that *do* vary per level:
+#     gap                = how tall the gap is between the top and bottom pipe.
+#                          Larger = more room to fly through.
+#     window_y_offset    = how far the gap centre can drift above/below mean.
+#                          Larger = more vertical travel needed between pipes.
+#
+# Going from L1 → L6 the gap shrinks and the gap-centre's vertical range
+# grows.  Both knobs make the bird's life harder in the same direction
+# (less margin for error), which is what we want.
+levels:
+
+  # L1 — Warm-up.  Wide gap, gap centre stays close to mid-screen.
+  1:
+    pipe_attributes:
+      pipe_frequency: 1800
+      width: 60
+      window_y_mean: 250
+      window_y_offset: 60
+      gap: 300
+      formation: random
+    minimum_action_gap: 2
+    game_length: 10
+
+  2:
+    pipe_attributes:
+      pipe_frequency: 1800
+      width: 60
+      window_y_mean: 250
+      window_y_offset: 90
+      gap: 260
+      formation: random
+    minimum_action_gap: 2
+    game_length: 10
+
+  3:
+    pipe_attributes:
+      pipe_frequency: 1800
+      width: 60
+      window_y_mean: 250
+      window_y_offset: 110
+      gap: 230
+      formation: random
+    minimum_action_gap: 2
+    game_length: 10
+
+  4:
+    pipe_attributes:
+      pipe_frequency: 1800
+      width: 60
+      window_y_mean: 250
+      window_y_offset: 130
+      gap: 210
+      formation: random
+    minimum_action_gap: 2
+    game_length: 10
+
+  5:
+    pipe_attributes:
+      pipe_frequency: 1800
+      width: 60
+      window_y_mean: 250
+      window_y_offset: 150
+      gap: 190
+      formation: random
+    minimum_action_gap: 2
+    game_length: 10
+
+  # L6 — Tightest.  Gap is barely 5 bird-heights tall and the centre
+  # roams as far as the screen permits.  Still solvable with the same
+  # action rate as L1 — just demands precision.
+  6:
+    pipe_attributes:
+      pipe_frequency: 1800
+      width: 60
+      window_y_mean: 250
+      window_y_offset: 170
+      gap: 170
+      formation: random
+    minimum_action_gap: 2
+    game_length: 10
