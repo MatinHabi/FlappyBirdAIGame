@@ -1,0 +1,9 @@
+numpy
+# pygame-ce is a maintained drop-in fork of pygame (same `import pygame`).
+# The original `pygame` package also works on Python <= 3.13.
+pygame-ce
+torch>=1.13
+gymnasium
+pyyaml
+colorama
+matplotlib

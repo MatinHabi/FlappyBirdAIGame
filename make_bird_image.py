@@ -2,13 +2,14 @@
 make_bird_image.py
 ===================
 
-Generates a simple placeholder sprite (`bird.png`) for the env to use
-when rendering.  The env will fall back to a yellow rectangle if no
-file is present, so this script is purely cosmetic — drop in any 40x30
-PNG you'd prefer instead.
+Generates a simple placeholder sprite for the env to use when
+rendering.  The repository already ships a `bird.png`, and the env falls
+back to a yellow rectangle if no file is present, so this script is
+purely cosmetic.  Any PNG works as a sprite — the env scales it to the
+bird's 40x30 hitbox.
 
 Usage:
-    python make_bird_image.py             # writes ./bird.png
+    python make_bird_image.py             # writes ./bird.png (overwrites the bundled sprite)
     python make_bird_image.py mybird.png  # writes ./mybird.png
 """
 import sys
@@ -37,11 +38,11 @@ def make_placeholder_bird(path: str = "bird.png",
     pygame.draw.circle(surf, (255, 255, 255), (eye_x, eye_y), 4)
     pygame.draw.circle(surf, (0, 0, 0), (eye_x + 1, eye_y), 2)
 
-    # beak — small orange triangle pointing right
+    # beak — small orange triangle pointing right, kept inside the canvas
     beak = [
-        (w - 2,           int(h * 0.50)),
-        (w + 6,           int(h * 0.46)),
-        (w - 2,           int(h * 0.66)),
+        (w - 9,           int(h * 0.50)),
+        (w - 1,           int(h * 0.46)),
+        (w - 9,           int(h * 0.66)),
     ]
     pygame.draw.polygon(surf, (240, 130, 30), beak)
 

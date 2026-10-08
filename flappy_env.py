@@ -121,9 +121,9 @@ class FlappyBirdEnv(gym.Env):
     # public API used by the agent / training loop
     # ----------------------------------------------------------------------
     def reset_random_seed(self, random_seed: int = None) -> None:
-        """Re-seed the pipe RNG.  Handy for evaluation, where you want
-        each eval episode to roll its own pipe sequence so the agent
-        can't overfit to a single deterministic layout."""
+        """Re-seed the pipe RNG.  Useful for evaluation, where each eval
+        episode should roll its own pipe sequence so the agent can't
+        overfit to a single deterministic layout."""
         self.rng = random.Random(random_seed)
 
     def reset(self, **kwargs):
@@ -215,12 +215,15 @@ class FlappyBirdEnv(gym.Env):
 
             # Run `minimum_action_gap` physics steps before the agent
             # gets to act again.  The first step uses the agent's chosen
-            # action; the rest are forced to "do_nothing".
+            # action; the rest are forced to "do_nothing".  Stop early if
+            # the bird dies so the terminal state isn't overwritten.
             for i in range(self.minimum_action_gap):
                 self.step(action if i == 0 else self.action_table['do_nothing'])
+                if self.done:
+                    break
 
             # Stop when the agent has cleared enough pipes.
-            if self.score >= self.game_length:
+            if not self.done and self.score >= self.game_length:
                 self.done = True
                 self.done_type = 'well_done'
 
@@ -376,8 +379,7 @@ class FlappyBirdEnv(gym.Env):
         if self.bird_img is not None:
             self.screen.blit(self.bird_img, (self.bird_x, self.bird_y))
         else:
-            # Fallback: a yellow rectangle.  Looks like Pac-Man, gets
-            # the point across.
+            # Fallback when no sprite is available: a yellow rectangle.
             pygame.draw.rect(
                 self.screen, (255, 200, 50),
                 (self.bird_x, self.bird_y,
@@ -399,6 +401,9 @@ class FlappyBirdEnv(gym.Env):
             self.screen.blit(info, (self.bird_x, max(0, self.bird_y - 24)))
 
         pygame.display.update()
-        # pump the event queue so the OS doesn't decide the window is
-        # unresponsive during long runs
-        pygame.event.pump()
+        # Drain the event queue so the OS doesn't mark the window as
+        # unresponsive during long runs, and exit cleanly if it is closed.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                raise SystemExit

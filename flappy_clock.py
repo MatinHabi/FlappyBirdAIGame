@@ -2,21 +2,23 @@
 flappy_clock.py
 ================
 
-Tiny clock wrapper for the Flappy Bird environment.
+Lightweight clock wrapper for the Flappy Bird environment.
 
 The environment runs in two modes:
   * Rendered      — needs real-time pacing so animation is watchable.
   * Headless RL   — runs as fast as the CPU allows; "time" only matters
                     insofar as the pipe-spawn cadence is measured in ms.
 
-Rather than scattering branches everywhere, this class hides the
-distinction behind a `current_time()` / `tick()` interface:
+Rather than branching on the mode throughout the environment, this
+class hides the distinction behind a `current_time()` / `tick()`
+interface:
 
   • If `show_screen` is True, current_time falls through to pygame's
     real-time millisecond ticker, and tick() caps the loop at frame_rate.
   • If `show_screen` is False, current_time reads from a deterministic
     counter that advances by exactly 1000/frame_rate ms every tick().
-    No display, no real-time waiting — but training stays reproducible.
+    No display and no real-time waiting, while pipe spacing stays
+    identical to the rendered game.
 """
 import pygame
 

@@ -86,14 +86,14 @@ class MLPRegression:
         return out.numpy()
 
     # ------------------------------------------------------------------
-    # checkpoint I/O — must match the assignment-style call sites
+    # checkpoint I/O
     # ------------------------------------------------------------------
     def save_model(self, path: str) -> None:
         torch.save(self.net.state_dict(), path)
 
     def load_model(self, path: str) -> None:
-        # weights_only=True matches the newer torch.load default and
-        # avoids the "unsafe pickle" deprecation noise.
+        # weights_only=True restricts unpickling to tensors, which is
+        # safer and matches the newer torch.load default.
         self.net.load_state_dict(torch.load(path, weights_only=True))
 
     def state_dict(self):

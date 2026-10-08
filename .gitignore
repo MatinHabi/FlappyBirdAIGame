@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Training outputs
+fun_train.csv
+fun_eval.csv
+sec_model_running.ckpt
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

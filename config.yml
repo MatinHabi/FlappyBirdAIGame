@@ -1,6 +1,6 @@
 # Flappy Bird DQN — game configuration
 # Six difficulty levels.  Difficulty progresses along ONE axis (how
-# small + how mobile the gap is) so a single policy can in principle
+# small and how mobile the gap is) so a single policy can in principle
 # be optimal on all of them.  Everything else — pipe width, spawn
 # cadence, action rate, formation — is held constant.
 
@@ -42,24 +42,24 @@ action_table:
 level: 1
 
 # ----- per-level overrides ---------------------------------------------------
-# To keep things learnable by a single policy, we hold these constants
+# To keep things learnable by a single policy, these are held constant
 # across ALL levels:
 #     pipe_attributes.pipe_frequency   = 1800   (pipes spawn every 1.8s)
 #     pipe_attributes.width            = 60     (pipe width)
-#     pipe_attributes.formation        = random (gap centre is uniform-random)
-#     pipe_attributes.window_y_mean    = 250    (gap centre orbits y=250)
+#     pipe_attributes.formation        = random (gap position is uniform-random)
+#     pipe_attributes.window_y_mean    = 250    (mean y of the gap's top edge)
 #     minimum_action_gap               = 2      (agent acts every 2 frames)
 #     game_length                      = 10     (10 pipes per episode)
 #
 # The two knobs that *do* vary per level:
 #     gap                = how tall the gap is between the top and bottom pipe.
 #                          Larger = more room to fly through.
-#     window_y_offset    = how far the gap centre can drift above/below mean.
-#                          Larger = more vertical travel needed between pipes.
+#     window_y_offset    = how far the gap can drift above/below its mean
+#                          position.  Larger = more vertical travel needed
+#                          between pipes.
 #
-# Going from L1 → L6 the gap shrinks and the gap-centre's vertical range
-# grows.  Both knobs make the bird's life harder in the same direction
-# (less margin for error), which is what we want.
+# Going from L1 → L6 the gap shrinks and its vertical range grows.  Both
+# knobs make the game harder in the same direction (less margin for error).
 levels:
 
   # L1 — Warm-up.  Wide gap, gap centre stays close to mid-screen.
@@ -118,9 +118,9 @@ levels:
     minimum_action_gap: 2
     game_length: 10
 
-  # L6 — Tightest.  Gap is barely 5 bird-heights tall and the centre
-  # roams as far as the screen permits.  Still solvable with the same
-  # action rate as L1 — just demands precision.
+  # L6 — Tightest.  Gap is under 6 bird-heights tall and roams as far as
+  # the screen permits.  Still solvable with the same action rate as
+  # L1 — just demands precision.
   6:
     pipe_attributes:
       pipe_frequency: 1800
